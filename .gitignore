@@ -1,0 +1,9 @@
+# ignore everything
+*
+
+# excepting 
+!.gitignore
+!README.md
+!etc/init.d/S51tpws
+!root/git/zapret/hostlist.txt
+!root/git/zapret/pass.txt
