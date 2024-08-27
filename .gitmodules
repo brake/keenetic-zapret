@@ -1,0 +1,3 @@
+[submodule "root/git/zapret"]
+	path = root/git/zapret
+	url = git@github.com:brake/zapret.git
