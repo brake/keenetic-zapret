@@ -1,0 +1,59 @@
+#!/bin/sh
+
+SCRIPT=/opt/root/git/zapret/tpws/tpws
+PIDFILE=/var/run/tpws.pid
+HOSTLISTFILE=/opt/root/git/zapret/hostlist.txt
+PASSLISTFILE=/opt/root/git/zapret/pass.txt
+ARGS="--daemon --bind-addr 192.168.1.1 --port 999 --disorder --tlsrec=sni --split-pos=2 --pidfile $PIDFILE --hostlist $HOSTLISTFILE --hostlist-exclude $PASSLISTFILE"
+
+
+start() {
+  if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
+    echo 'Service TPWS is already running' >&2
+    return 1
+  fi
+  $SCRIPT $ARGS
+  iptables -t nat -A PREROUTING -i br0 -p tcp --dport 80 -j REDIRECT --to-port 999
+  iptables -t nat -A PREROUTING -i br0 -p tcp --dport 443 -j REDIRECT --to-port 999
+  iptables -t nat -A PREROUTING -i br0 -p udp --dport 443 -j REDIRECT --to-port 999
+  echo 'Started TPWS service'
+}
+
+stop() {
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
+    echo 'Service TPWS is not running' >&2
+    return 1
+  fi
+  echo 'Stopping TPWS service...'
+  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
+  iptables -t nat -D PREROUTING -i br0 -p tcp --dport 80 -j REDIRECT --to-port 999
+  iptables -t nat -D PREROUTING -i br0 -p tcp --dport 443 -j REDIRECT --to-port 999
+  iptables -t nat -D PREROUTING -i br0 -p udp --dport 443 -j REDIRECT --to-port 999
+  echo 'Stopped TPWS service'
+}
+
+status() {
+  if [ -f $PIDFILE ] && kill -0 $(cat $PIDFILE); then
+    echo 'Service TPWS is running'
+  else
+    echo 'Service TPWS is stopped'
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+esac
