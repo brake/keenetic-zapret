@@ -14,6 +14,8 @@ alias gcb='git checkout -b'
 alias gco='git checkout'
 alias gm='git merge'
 alias gc='git commit --verbose'
+alias ggpush='git push origin "$(git_current_branch)"'
+alias gcm='git checkout main'
 
 function git_current_branch() {
   git rev-parse --abbrev-ref HEAD
