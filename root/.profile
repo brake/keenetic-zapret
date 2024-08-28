@@ -19,6 +19,7 @@ alias ggpush='git push origin "$(git_current_branch)"'
 alias gcm='git checkout main || git checkout master'
 alias gcpr='git checkout @{-1}'
 alias gstp='git stash pop'
+alias g-1='git reset --soft HEAD~1'
 
 function git_current_branch() {
   git rev-parse --abbrev-ref HEAD
