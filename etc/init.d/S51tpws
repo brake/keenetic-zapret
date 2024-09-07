@@ -4,7 +4,8 @@ SCRIPT=/opt/root/git/zapret/tpws/tpws
 PIDFILE=/var/run/tpws.pid
 HOSTLISTFILE=/opt/root/git/zapret/hostlist.txt
 PASSLISTFILE=/opt/root/git/zapret/pass.txt
-ARGS="--daemon --bind-addr 192.168.1.1 --port 999 --disorder --tlsrec=sni --split-pos=2 --pidfile $PIDFILE --hostlist $HOSTLISTFILE --hostlist-exclude $PASSLISTFILE"
+AUTO_HOSTLIST_FILE=/opt/root/git/zapret/autohostlist.txt
+ARGS="--daemon --bind-addr 192.168.1.1 --port 999 --disorder --tlsrec=sni --split-pos=2 --pidfile $PIDFILE --hostlist $HOSTLISTFILE --hostlist-exclude $PASSLISTFILE --hostlist-auto=$AUTO_HOSTLIST_FILE"
 
 
 start() {
